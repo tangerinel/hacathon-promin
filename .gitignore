@@ -4,6 +4,7 @@
 
 # Web app
 web-app/.parcel-cache
+web-app/dist
 
 # Smart contracts
 smart-contracts/coverage
