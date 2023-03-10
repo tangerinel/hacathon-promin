@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "parcel",
+    "build": "parcel build"
   },
   "repository": {
     "type": "git",
@@ -21,6 +23,8 @@
     "parcel": "^2.8.3"
   },
   "dependencies": {
+    "@metamask/onboarding": "^1.0.1",
+    "bootstrap": "^5.2.3",
     "express": "^4.18.2",
     "web3": "^1.8.2"
   }
