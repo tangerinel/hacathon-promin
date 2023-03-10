@@ -1,0 +1,27 @@
+{
+  "name": "hackathon-promin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tangerinel/hackathon-promin.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tangerinel/hackathon-promin/issues"
+  },
+  "homepage": "https://github.com/tangerinel/hackathon-promin#readme",
+  "devDependencies": {
+    "parcel": "^2.8.3"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "web3": "^1.8.2"
+  }
+}
