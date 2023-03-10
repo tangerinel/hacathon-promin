@@ -2,6 +2,9 @@
 **/package-lock.json
 **/.env
 
+# Web app
+web-app/.parcel-cache
+
 # Smart contracts
 smart-contracts/coverage
 smart-contracts/coverage.json
