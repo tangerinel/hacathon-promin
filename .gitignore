@@ -1,2 +1,11 @@
 **/node_modules/
 **/package-lock.json
+**/.env
+
+# Smart contracts
+smart-contracts/coverage
+smart-contracts/coverage.json
+smart-contracts/typechain
+smart-contracts/typechain-types
+smart-contracts/cache
+smart-contracts/artifacts
