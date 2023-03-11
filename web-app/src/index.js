@@ -1,75 +1,57 @@
-import MetaMaskOnboarding from "@metamask/onboarding";
+"use strict";
+const express = require('express');
+const Bundler = require('parcel-bundler');
 
-const player = document.querySelector(".success-anim");
 
-const onboarding = new MetaMaskOnboarding();
-const btn = document.querySelector(".onboard");
-const mainPageBtn = document.querySelector(".main-page");
-const statusText = document.querySelector("h1");
-const statusDesc = document.querySelector(".desc");
-const loader = document.querySelector(".loader");
-const upArrow = document.querySelector(".up");
-const confetti = document.querySelector(".confetti");
 
-const isMetaMaskInstalled = () => {
-  const { ethereum } = window;
-  return Boolean(ethereum && ethereum.isMetaMask);
+
+
+// declare module "express-session" {
+//   export interface SessionData {
+//     userId: ObjectId;
+//   }
+// }
+
+// /** Connect to Mongo */
+// mongoose
+//   .connect(config.mongo.url)
+//   .then(() => {
+//     console.log("Mongo connected successfully.");
+//     startServer();
+//   })
+//   .catch((error) => console.log(error));
+
+/** starts server if mongoose connected */
+const startServer = () => {
+  const app = express();
+
+  //to use cors instead of express.static uncoment this
+  // app.use(
+  //   cors({
+  //     origin: ["http://localhost:8080"],
+  //     credentials: true,
+  //   })
+  // );
+
+//   app.use(
+//     session({
+//       store: MongoStore.create({ mongoUrl: config.mongo.url }),
+//       secret: "very secret secret",
+//       resave: false,
+//       saveUninitialized: false,
+//       cookie: {
+//         maxAge: 1000 * 60 * 60 * 3, // 3 hours
+//         httpOnly: true,
+//       },
+//     })
+//   );
+  const file = '../static/login.html';
+  const options = {};
+
+  const bundler = new Bundler(file, options);
+  app.use(bundler.middleware());
+  app.listen(3000, () =>
+    console.log(`SERVER STARTED ON PORT ${3000}`)
+  );
 };
-
-let connected = (accounts) => {
-  statusText.innerHTML = "Connected!";
-  statusDesc.classList.add("account");
-  statusDesc.innerHTML = accounts[0];
-  btn.style.display = "none";
-  mainPageBtn.style.display = "inline-block";
-  mainPageBtn.innerText = "Make Nova better";
-  loader.style.display = "none";
-  upArrow.style.display = "none";
-  confetti.style.display = "block";
-  player.play();
-};
-
-async function connectWallet() {
-  return await ethereum.request({ method: "eth_accounts" });
-}
-
-const onClickInstallMetaMask = () => {
-  onboarding.startOnboarding();
-  loader.style.display = "block";
-};
-
-btn.addEventListener("click", async () => {
-  btn.style.backgroundColor = "#cccccc";
-  loader.style.display = "block";
-
-  try {
-    const accounts = await ethereum.request({ method: "eth_requestAccounts" });
-    connected(accounts);
-  } catch (error) {
-    console.error(error);
-  }
-});
-mainPageBtn.addEventListener("click", ()=>{
-    
-} );
-const MetaMaskClientCheck = () => {
-  if (!isMetaMaskInstalled()) {
-    statusText.innerText = "You have to Install a Wallet";
-    statusDesc.innerText = "We recommend the MetaMask wallet.";
-    btn.innerText = "Install MetaMask";
-    btn.onclick = onClickInstallMetaMask;
-  } else {
-    connectWallet().then((accounts) => {
-      if (accounts && accounts[0] > 0) {
-        connected(accounts);
-      } else {
-        statusText.innerHTML = "Connect your wallet";
-        statusDesc.innerHTML = `To decide your fate, please connect your MetaMask wallet.`;
-        btn.innerText = "Connect MetaMask";
-        upArrow.style.display = "block";
-      }
-    });
-  }
-};
-
-MetaMaskClientCheck();
+startServer();
