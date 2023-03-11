@@ -1,22 +1,22 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.9;
 
-// Uncomment this line to use console.log
-// import "hardhat/console.sol";
-
 contract Voting {
+    uint public constant TIME_LIMIT = 7 days;
+
     struct Poll {
-        bool active;
-        uint256 voteYes;
-        uint256 voteNo;
+        uint dateCreated;
+        string name;
+        string description;
+        uint voteYes;
+        uint voteNo;
         mapping(address => bool) voted;
     }
 
-    // MongoDB objectID to Poll
-    mapping(bytes12 => Poll) polls;
+    mapping(uint => Poll) polls;
 
-    // Polls size
-    uint256 pollCounter;
+    // Polls size. Last poll id is pollCounter - 1
+    uint public pollCounter;
 
     mapping(address => bool) whitelisted;
 
@@ -24,13 +24,20 @@ contract Voting {
 
     // EVENTS
 
-    event PollCreated(bytes12 indexed pollId);
+    event PollCreated(
+        uint indexed pollId,
+        uint indexed dateCreated,
+        string indexed name,
+        string description
+    );
 
-    event addedToWhitelist(uint256 indexed studentNumber, address indexed addr);
+    event voted(uint indexed pollId, address indexed addr, bool indexed yes);
+
+    event addedToWhitelist(uint indexed studentNumber, address indexed addr);
 
     event addedToAdmins(address indexed addr);
 
-    event voted(bytes12 indexed pollId, address indexed addr, bool indexed yes);
+    // FUNCTIONS
 
     constructor() {
         admins[msg.sender] = true;
@@ -44,30 +51,52 @@ contract Voting {
         return admins[addr];
     }
 
-    function haveVoted(
-        bytes12 pollId,
-        address addr
-    ) public view returns (bool) {
+    function haveVoted(uint pollId, address addr) public view returns (bool) {
         return polls[pollId].voted[addr];
     }
 
-    function pollIsActive(bytes12 pollId) public view returns (bool) {
-        return polls[pollId].active;
+    function pollIsActive(uint pollId) public view returns (bool) {
+        return block.timestamp < polls[pollId].dateCreated + TIME_LIMIT;
     }
 
-    function createPoll(bytes12 pollId) external {
-        require(isWhitelisted(msg.sender), "Not whitelisted");
-        require(!pollIsActive(pollId), "Poll already exists");
-
-        polls[pollId].active = true;
-
-        emit PollCreated(pollId);
+    function getName(uint pollId) external view returns (string memory) {
+        return polls[pollId].name;
     }
 
-    function vote(bytes12 pollId, bool yes) external {
+    function getDescription(uint pollId) external view returns (string memory) {
+        return polls[pollId].description;
+    }
+
+    function getVoteYes(uint pollId) external view returns (uint) {
+        return polls[pollId].voteYes;
+    }
+
+    function getVoteNo(uint pollId) external view returns (uint) {
+        return polls[pollId].voteNo;
+    }
+
+    function getTotalVotes(uint pollId) external view returns (uint) {
+        return polls[pollId].voteYes + polls[pollId].voteNo;
+    }
+
+    function createPoll(string memory name, string memory description) external {
         require(isWhitelisted(msg.sender), "Not whitelisted");
-        require(pollIsActive(pollId), "Poll doesn't exist");
-        require(!haveVoted(pollId, msg.sender), "Have voted");
+
+        uint now = block.timestamp;
+        uint pollId = pollCounter;
+        polls[pollId].dateCreated = now;
+        polls[pollId].name = name;
+        polls[pollId].description = description;
+
+        pollCounter++;
+
+        emit PollCreated(pollId, now, name, description);
+    }
+
+    function vote(uint pollId, bool yes) external {
+        require(isWhitelisted(msg.sender), "Not whitelisted");
+        require(pollIsActive(pollId), "Poll isn't active");
+        require(!haveVoted(pollId, msg.sender), "Can't vote twice");
 
         if (yes) {
             polls[pollId].voteYes++;
@@ -79,7 +108,7 @@ contract Voting {
         emit voted(pollId, msg.sender, yes);
     }
 
-    function addToWhitelist(uint256 studentNumber, address addr) external {
+    function addToWhitelist(uint studentNumber, address addr) external {
         require(isAdmin(msg.sender), "Not admin");
 
         whitelisted[addr] = true;

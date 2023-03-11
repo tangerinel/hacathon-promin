@@ -5,22 +5,21 @@ import { ethers } from "hardhat";
 
 describe("Voting", function () {
   async function deployOneYearLockFixture() {
-    const [owner, otherAccount] = await ethers.getSigners();
+    const [owner, other] = await ethers.getSigners();
 
     const Voting = await ethers.getContractFactory("Voting");
     const voting = await Voting.deploy();
     await voting.addToWhitelist(123, owner.address);
+    await voting.addToWhitelist(124, other.address);
 
-    return { voting, owner, otherAccount };
+    return { voting, owner, other };
   }
 
-  describe("Basic tests", function () {
-    it("Check MongoDB id", async function () {
-      const { voting, owner } = await loadFixture(deployOneYearLockFixture);
+  it("Unable to vote in nonexistent poll", async function () {
+    const { voting, owner, other } = await loadFixture(deployOneYearLockFixture);
 
-      await expect(voting.createPoll("0x" + "507f1f77bcf86cd799439011"))
-        .to.emit(voting, 'PollCreated')
-        .withArgs("0x" + "507f1f77bcf86cd799439011");
-    });
+    let yes = true;
+    await expect(voting.connect(other).vote(0, yes))
+      .to.be.revertedWith("Poll isn't active");
   });
 });
