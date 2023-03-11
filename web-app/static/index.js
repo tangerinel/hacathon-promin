@@ -3,7 +3,7 @@ const player = document.querySelector(".success-anim");
 
 const onboarding = new MetaMaskOnboarding();
 const btn = document.querySelector(".onboard");
-const mainPageBtn = document.querySelector(".main-page");
+const mainPageBtn = document.querySelector("#main-page");
 const statusText = document.querySelector("h1");
 const statusDesc = document.querySelector(".desc");
 const loader = document.querySelector(".loader");
@@ -20,8 +20,8 @@ let connected = (accounts) => {
   statusDesc.classList.add("account");
   statusDesc.innerHTML = accounts[0];
   btn.style.display = "none";
-  mainPageBtn.style.display = "inline-block";
-  mainPageBtn.innerText = "Make Nova better";
+  mainPageBtn.removeAttribute("hidden");
+  // mainPageBtn.style.display = "inline-block";
   loader.style.display = "none";
   upArrow.style.display = "none";
   confetti.style.display = "block";
@@ -36,7 +36,13 @@ const onClickInstallMetaMask = () => {
   onboarding.startOnboarding();
   loader.style.display = "block";
 };
-
+mainPageBtn.addEventListener("click", async ()=>{
+   connectWallet().then((accounts) => {
+    if (accounts && accounts[0] > 0) {
+      location.href = "/main.html";
+      mainPageBtn.dissabled = false;
+    }});
+});
 btn.addEventListener("click", async () => {
   btn.style.backgroundColor = "#cccccc";
   loader.style.display = "block";
@@ -48,9 +54,7 @@ btn.addEventListener("click", async () => {
     console.error(error);
   }
 });
-mainPageBtn.addEventListener("click", ()=>{
-    
-} );
+
 const MetaMaskClientCheck = () => {
   if (!isMetaMaskInstalled()) {
     statusText.innerText = "You have to Install a Wallet";
@@ -72,3 +76,4 @@ const MetaMaskClientCheck = () => {
 };
 
 MetaMaskClientCheck();
+
