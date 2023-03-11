@@ -1,4 +1,5 @@
 import MetaMaskOnboarding from "@metamask/onboarding";
+
 const player = document.querySelector(".success-anim");
 
 const onboarding = new MetaMaskOnboarding();
@@ -21,7 +22,7 @@ let connected = (accounts) => {
   statusDesc.innerHTML = accounts[0];
   btn.style.display = "none";
   mainPageBtn.removeAttribute("hidden");
-  // mainPageBtn.style.display = "inline-block";
+
   loader.style.display = "none";
   upArrow.style.display = "none";
   confetti.style.display = "block";
@@ -36,11 +37,10 @@ const onClickInstallMetaMask = () => {
   onboarding.startOnboarding();
   loader.style.display = "block";
 };
-mainPageBtn.addEventListener("click", async ()=>{
+mainPageBtn.addEventListener("click",  ()=>{
    connectWallet().then((accounts) => {
     if (accounts && accounts[0] > 0) {
-      location.href = "/main.html";
-      mainPageBtn.dissabled = false;
+      location.href = "main.html";
     }});
 });
 btn.addEventListener("click", async () => {
