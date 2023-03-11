@@ -6,6 +6,7 @@ pragma solidity ^0.8.9;
 
 contract Voting {
     struct Poll {
+        bool active;
         uint256 voteYes;
         uint256 voteNo;
         mapping(address => bool) voted;
@@ -43,22 +44,29 @@ contract Voting {
         return admins[addr];
     }
 
-    function haveVoted(bytes12 pollId, address addr)
-        public
-        view
-        returns (bool)
-    {
+    function haveVoted(
+        bytes12 pollId,
+        address addr
+    ) public view returns (bool) {
         return polls[pollId].voted[addr];
+    }
+
+    function pollIsActive(bytes12 pollId) public view returns (bool) {
+        return polls[pollId].active;
     }
 
     function createPoll(bytes12 pollId) external {
         require(isWhitelisted(msg.sender), "Not whitelisted");
+        require(!pollIsActive(pollId), "Poll already exists");
+
+        polls[pollId].active = true;
 
         emit PollCreated(pollId);
     }
 
     function vote(bytes12 pollId, bool yes) external {
         require(isWhitelisted(msg.sender), "Not whitelisted");
+        require(pollIsActive(pollId), "Poll doesn't exist");
         require(!haveVoted(pollId, msg.sender), "Have voted");
 
         if (yes) {
