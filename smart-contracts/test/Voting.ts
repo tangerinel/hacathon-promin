@@ -30,6 +30,7 @@ describe("Voting", function () {
     let name = "name";
     let description = "description";
     await voting.connect(other).createPoll(name, description);
+    expect(await voting.getDateCreated(pollId)).to.eq(await time.latest());
     expect(await voting.getName(pollId)).to.eq(name);
     expect(await voting.getDescription(pollId)).to.eq(description);
     expect(await voting.pollIsActive(pollId)).to.eq(true);

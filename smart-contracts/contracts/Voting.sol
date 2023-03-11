@@ -59,6 +59,10 @@ contract Voting {
         return block.timestamp < polls[pollId].dateCreated + TIME_LIMIT;
     }
 
+    function getDateCreated(uint pollId) external view returns (uint) {
+        return polls[pollId].dateCreated;
+    }
+
     function getName(uint pollId) external view returns (string memory) {
         return polls[pollId].name;
     }
