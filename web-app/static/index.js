@@ -22,7 +22,7 @@ let connected = (accounts) => {
   statusDesc.innerHTML = accounts[0];
   btn.style.display = "none";
   mainPageBtn.removeAttribute("hidden");
-
+  mainPageBtn.onclick = aa
   loader.style.display = "none";
   upArrow.style.display = "none";
   confetti.style.display = "block";
@@ -32,17 +32,17 @@ let connected = (accounts) => {
 async function connectWallet() {
   return await ethereum.request({ method: "eth_accounts" });
 }
-
+const aa = ()=>{
+ // connectWallet().then((accounts) => {
+  //  if (accounts && accounts[0] > 0) {
+      location.href = "/main.html";
+   // }});
+}
 const onClickInstallMetaMask = () => {
   onboarding.startOnboarding();
   loader.style.display = "block";
 };
-mainPageBtn.addEventListener("click",  ()=>{
-   connectWallet().then((accounts) => {
-    if (accounts && accounts[0] > 0) {
-      location.href = "main.html";
-    }});
-});
+
 btn.addEventListener("click", async () => {
   btn.style.backgroundColor = "#cccccc";
   loader.style.display = "block";
