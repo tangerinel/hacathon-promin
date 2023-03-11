@@ -51,5 +51,31 @@ describe("Voting", function () {
     expect(await voting.haveVoted(pollId, other.address)).to.eq(true);
     expect(await voting.haveVoted(pollId, owner.address)).to.eq(false);
   });
+
+  it("Poll expires", async function() {
+    const { voting, owner, other } = await loadFixture(deployVotingFixture);
+
+    let pollId = 0;
+    let name = "name";
+    let description = "description";
+    await voting.connect(other).createPoll(name, description);
+    
+    await time.increase(await voting.TIME_LIMIT());
+    
+    expect(await voting.pollIsActive(pollId)).to.eq(false);
+  });
+
+  it("Poll doesn't expire", async function() {
+    const { voting, owner, other } = await loadFixture(deployVotingFixture);
+
+    let pollId = 0;
+    let name = "name";
+    let description = "description";
+    await voting.connect(other).createPoll(name, description);
+    
+    await time.increase((await voting.TIME_LIMIT()).sub(1));
+    
+    expect(await voting.pollIsActive(pollId)).to.eq(true);
+  });
   
 });
