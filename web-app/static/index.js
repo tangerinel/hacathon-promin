@@ -128,8 +128,6 @@ function addPoll(poll){
   col.innerHTML = template;
   row.appendChild(col);
   createModal(poll);
-  let pollId = "#voteModal" + poll.pollId;
-  document.querySelector(pollId).modal('show');
 }
 function cardTemplate(poll){
   const percYes = (poll.votesYes/poll.totalVotes)*100;
@@ -211,6 +209,7 @@ const MetaMaskClientCheck = () => {
     });
   }
 };
+
 
 MetaMaskClientCheck();
 
