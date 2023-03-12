@@ -59,9 +59,10 @@ const onMainPageBtnClick = ()=>{
 function animate(bool){
   let row = document.querySelector("#cards-container");
   if (bool){
-    row.innerHTML = "<div class=\"onboard-container\">\n" +
-        "      <div class=\"loader\">\n" +
+    row.innerHTML = "<div class=\"onboard-container mx-auto\">\n" +
+        "      <div class=\"loader \">\n" +
         "        <lottie-player\n" +
+        "          class=\"\"" +
         "          src=\"https://assets6.lottiefiles.com/private_files/lf30_fup2uejx.json\"\n" +
         "          background=\"transparent\"\n" +
         "          speed=\"1\"\n" +
