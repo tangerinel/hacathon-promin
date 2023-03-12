@@ -16,6 +16,7 @@ const loader = document.querySelector(".loader");
 const upArrow = document.querySelector(".up");
 const confetti = document.querySelector(".confetti");
 
+let contract;
 
 
 const isMetaMaskInstalled = () => {
@@ -29,7 +30,7 @@ let connected = (accounts) => {
   statusDesc.innerHTML = accounts[0];
   btn.style.display = "none";
   mainPageBtn.removeAttribute("hidden");
-  mainPageBtn.onclick = aa;
+  mainPageBtn.onclick =  onMainPageBtnClick;
   loader.style.display = "none";
   upArrow.style.display = "none";
   confetti.style.display = "block";
@@ -39,27 +40,76 @@ let connected = (accounts) => {
 async function connectWallet() {
   return await ethereum.request({ method: "eth_accounts" });
 }
-const aa = ()=>{
- connectWallet().then((accounts) => {
+const onMainPageBtnClick = ()=>{
+ connectWallet().then(async (accounts) => {
    if (accounts && accounts[0] > 0) {
-     const contract = getContract();
-    getPolls();
-   window.location.replace("./main.html");
-  
+     contract = getContract();
+     fetch("./main.html")
+         .then((x) => x.text())
+         .then((y) => (document.querySelector("html").innerHTML = y));
+     let numberPolls = await contract.pollCounter();
+       for (let i = 0; i < numberPolls; i++){
+         let poll = await getPoll(i, accounts[0]);
+         addPoll(poll);
+       }
+   // let numPolls = a;
    }});
+}
+function addPoll(poll){
+  const template = cardTemplate(poll);
+  let row = document.querySelector(".row");
+  const col = document.createElement('div');
+  col.className = "col-md-4";
+  col.innerHTML = template;
+  row.appendChild(col);
+}
+function cardTemplate(poll){
+  const percYes = (poll.votesYes/poll.totalVotes)*100;
+  const percNo = (poll.votesNo/poll.totalVotes)*100;
+  const template = `  <div class="card">
+          <div class="card-body">
+            <h5 class="card-title text-left">${poll.name}</h5>
+           <p class="text-left mb-1 mt-1">Yes</p>
+            <div class="progress mb-1" style="height: 13px;">
+                <div class="progress-bar bg-success" role="progressbar" style="width:${percYes}%" 
+                 aria-valuenow="${percYes}" aria-valuemin="0" aria-valuemax="100">
+                ${percYes}%</div>
+              </div>
+              <p class="text-left mb-1 mt-1 ">No</p>
+              <div class="progress" style="height: 13px;">
+                <div class="progress-bar bg-danger" role="progressbar" style="width: ${percNo}%" aria-valuenow="${percNo}" aria-valuemin="0" aria-valuemax="100">
+                ${percNo}%</div>
+              </div>
+            <!-- <p class="card-text">Some example text. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p> -->
+            <button type="button" class="btn btn-outline-info  float-right custom-btn-widtch" data-toggle="modal" data-target="#voteModal">Vote</button>
+          </div>
+        </div>
+      </div>`
+
+  return template;
 }
 // const onClickInstallMetaMask = () => {
 //   onboarding.startOnboarding();
 //   loader.style.display = "block";
 // };
-
+async function getPoll(pollId, account) {
+  let poll = {pollId: pollId};
+  poll.name = await contract.getName(pollId);
+  poll.description = await contract.getDescription(pollId);
+  poll.votesYes = await contract.getVoteYes(pollId);
+  poll.votesNo = await contract.getVoteNo(pollId);
+  poll.totalVotes = await contract.getTotalVotes(pollId);
+  poll.author = await contract.getAuthor(pollId);
+  poll.dateCreated = await contract.getDateCreated(pollId);
+  poll.pollIsActive = await contract.pollIsActive(pollId);
+  poll.haveVoted = await contract.haveVoted(pollId, account);
+  return poll;
+}
 function getContract (){
-  const provider = new ethers.providers.JsonRpcProvider();
-  return new ethers.Contract(config.contractAddress, config.contractABI.ABI, provider);
+  const provider = new ethers.getDefaultProvider("goerli");
+  return  new ethers.Contract(config.contractAddress, config.contractABI.ABI, provider);
 }
-function getPolls(){
 
-}
 
 btn.addEventListener("click", async () => {
   btn.style.backgroundColor = "#cccccc";

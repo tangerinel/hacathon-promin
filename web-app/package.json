@@ -2,7 +2,6 @@
   "name": "hackathon-promin",
   "version": "1.0.0",
   "description": "",
-  "type": "module",
   "main": "static/index.js",
   "scripts": {
     "build": "parcel build static/login.html",
