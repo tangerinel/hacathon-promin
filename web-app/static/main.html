@@ -7,37 +7,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <link rel="stylesheet" href="main.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 
 <body>
 
-    <!-- Navigation bar -->
-    <nav class="navbar navbar-light bg-light">
-        <a class="navbar-brand" href="#">
-          <img src="../assests/vote_icon.png" width="30" height="30" class="d-inline-block align-top" alt="">
-          Choose your future
-        </a>
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Create poll</button>
-      </nav>
+  <!-- Navigation bar -->
+  <nav class="navbar navbar-light bg-light">
+    <a class="navbar-brand" href="#">
+      <img src="../assests/vote_icon.png" width="30" height="30" class="d-inline-block align-top" alt="">
+      Choose your future
+    </a>
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Create poll</button>
+  </nav>
 
-<div class="container">
+  <div class="container">
 
-<!--      Active polls indicator-->
-     <div class="row">
+    <!--      Active polls indicator-->
+    <div class="row">
       <div class="col-md-4">
         <button type="button" class="btn btn-light bg-transparent border-0" disabled>
-            Active polls
-            <span id="act-polls" class="badge badge-light"> </span></button>
+          Active polls
+          <span id="act-polls" class="badge badge-light"> </span></button>
       </div>
-    </div> 
+    </div>
 
     <div class="row" id="cards-container">
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="voteModal" tabindex="-1" role="dialog" aria-labelledby="voteModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+    <div class="modal fade" id="voteModal" tabindex="-1" role="dialog" aria-labelledby="voteModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="voteModalLabel">Vote for Card</h5>
@@ -54,11 +56,11 @@
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-
-<!--  Pagination -->
-<div class="row">
+    </div>
+  </div>
+  <div><br></div>
+  <!--  Pagination -->
+  <div class="row">
     <div class="col-md-12">
       <nav aria-label="Page navigation">
         <ul class="pagination justify-content-center">
@@ -76,7 +78,10 @@
     </div>
   </div>
 
-<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
 </body>
 
 </html>

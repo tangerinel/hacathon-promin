@@ -87,7 +87,7 @@ function cardTemplate(poll){
                 ${percNo}%</div>
               </div>
             <!-- <p class="card-text">Some example text. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p> -->
-            <button type="button" class="btn btn-outline-info  float-right custom-btn-widtch" data-toggle="modal" data-target="#voteModal">Vote</button>
+            <button type="button" class="btn btn-outline-info  float-right" data-toggle="modal" data-target="#voteModal">Vote</button>
           </div>
         </div>
       </div>`
