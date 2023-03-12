@@ -16,7 +16,7 @@
   <!-- Navigation bar -->
   <nav class="navbar navbar-light bg-light">
     <a class="navbar-brand" href="#">
-      <img src="../assests/vote_icon.png" width="30" height="30" class="d-inline-block align-top" alt="">
+      <img src="../assets/vote_icon.png" width="30" height="30" class="d-inline-block align-top" alt="">
       Choose your future
     </a>
     <button class="btn btn-outline-success my-2 my-sm-0" type="submit" data-toggle="modal" data-target="#createPoll">Create poll</button>
@@ -36,7 +36,7 @@
     <div class="row" id="cards-container">
     </div>
 
-    <!-- Modal -->
+    <!-- Modal for cards -->
     <div class="modal fade" id="voteModal" tabindex="-1" role="dialog" aria-labelledby="voteModalLabel"
       aria-hidden="true">
       <div class="modal-dialog" role="document">
@@ -67,37 +67,37 @@
     </div>
 
     <!-- Modal to create poll -->
-        <div class="modal fade" id="createPoll" tabindex="-1" role="dialog" aria-labelledby="voteModalLabel"
-          aria-hidden="true">
-          <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="createPollLabel">New Poll</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                      </div>
-                      <div class="modal-body">
-                        <form>
-                          <div class="form-group">
-                            <label class="col-form-label">Name:</label>
-                            <input type="text" class="form-control" id="newPollName" required>
-                          </div>
-                          <div class="form-group">
-                            <label  class="col-form-label">Description:</label>
-                            <textarea class="form-control" id="newDescription" required></textarea>
-                          </div>
-                        </form>
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <input class="btn btn-primary" id="new-form-created" type="submit" value="Submit">
-                      </div>
-                    </div>
-                  </div>
-        </div>
   </div>
-  <div><br></div>
+    <div class="modal fade" id="createPoll" tabindex="-1" role="dialog" aria-labelledby="voteModalLabel"
+         aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="createPollLabel">New Poll</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <label class="col-form-label">Name:</label>
+                <input type="text" class="form-control" id="newPollName" required>
+              </div>
+              <div class="form-group">
+                <label  class="col-form-label">Description:</label>
+                <textarea class="form-control" id="newDescription" required></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <input class="btn btn-primary" id="new-form-created" type="submit" value="Submit">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   </div>
 
   <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>

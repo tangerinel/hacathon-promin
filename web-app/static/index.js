@@ -53,6 +53,14 @@ const onMainPageBtnClick = ()=>{
      let polls = await getPolls(numberPolls, accounts[0]);
      animate(false);
      polls.forEach(poll => addPoll(poll));
+
+     let newPollBtn = document.querySelector("#new-form-created");
+     newPollBtn.addEventListener('click', ()=>{
+       let name = document.getElementById("newPollName").value;
+       let description =  document.getElementById("newDescription").value;
+       createPoll(contract, name, description);
+     })
+
      const buttons = document.querySelectorAll('[data-target="#voteModal"]');
      buttons.forEach(button => {
        button.addEventListener('click', () => {
@@ -82,12 +90,6 @@ const onMainPageBtnClick = ()=>{
          })
        });
      });
-     let newPollBtn = document.querySelector("#new-form-created");
-     newPollBtn.addEventListener('click', ()=>{
-       let name = document.getElementById("newPollName").value;
-       let decription =  document.getElementById("newDescription").value;
-       createPoll(contract, name, decription);
-     })
 
    // let numPolls = a;
    }});
