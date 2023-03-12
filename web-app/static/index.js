@@ -57,7 +57,7 @@ const onMainPageBtnClick = ()=>{
 }
 function addPoll(poll){
   const template = cardTemplate(poll);
-  let row = document.querySelector(".row");
+  let row = document.querySelector("#cards-container");
   const col = document.createElement('div');
   col.className = "col-md-4";
   col.innerHTML = template;
