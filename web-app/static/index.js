@@ -52,9 +52,41 @@ const onMainPageBtnClick = ()=>{
      animate(true);
      let polls = await getPolls(numberPolls, accounts[0]);
      animate(false);
-       polls.forEach(poll => addPoll(poll));
+     polls.forEach(poll => addPoll(poll));
    // let numPolls = a;
    }});
+}
+function createModal(poll) {
+  let id = "#voteModal"+poll.pollId;
+  let container = document.querySelector(".container");
+  let modal = document.createElement('div');
+  modal.className = "modal fade";
+  modal.id = id;
+  modal.tabIndex = -1;
+  modal.role="dialog";
+  modal.setAttribute("aria-labelledby","voteModalLabel");
+  modal.setAttribute("aria-hidden",'true');
+
+  modal.innerHTML = `
+      <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="voteModalLabel">${poll.name}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <p>Are you sure you want to vote for this card?</p>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary">Vote</button>
+                  </div>
+                </div>
+              </div>`
+
+  container.appendChild(modal);
 }
 function animate(bool){
   let row = document.querySelector("#cards-container");
@@ -95,10 +127,14 @@ function addPoll(poll){
   col.className = "col-md-4";
   col.innerHTML = template;
   row.appendChild(col);
+  createModal(poll);
+  let pollId = "#voteModal" + poll.pollId;
+  document.querySelector(pollId).modal('show');
 }
 function cardTemplate(poll){
   const percYes = (poll.votesYes/poll.totalVotes)*100;
   const percNo = (poll.votesNo/poll.totalVotes)*100;
+  const modalId = "#voteModal"+poll.pollId;
   const template = `  <div class="card">
           <div class="card-body">
             <h5 class="card-title text-left">${poll.name}</h5>
@@ -114,7 +150,7 @@ function cardTemplate(poll){
                 ${percNo}%</div>
               </div>
             <!-- <p class="card-text">Some example text. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p> -->
-            <button type="button" class="btn btn-outline-info  float-right" data-toggle="modal" data-target="#voteModal">Vote</button>
+            <button type="button" class="btn btn-outline-info  float-right" data-toggle="modal" data-target=${modalId} >Vote</button>
           </div>
         </div>
       </div>`
