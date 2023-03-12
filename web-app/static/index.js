@@ -43,7 +43,7 @@ async function connectWallet() {
 const onMainPageBtnClick = ()=>{
  connectWallet().then(async (accounts) => {
    if (accounts && accounts[0] > 0) {
-     contract = await getContract();
+     contract = getContract();
      fetch("./main.html")
          .then((x) => x.text())
          .then((y) => (document.querySelector("html").innerHTML = y));
@@ -53,6 +53,7 @@ const onMainPageBtnClick = ()=>{
      let polls = await getPolls(numberPolls, accounts[0]);
      animate(false);
      polls.forEach(poll => addPoll(poll));
+
      let newPollBtn = document.querySelector("#new-form-created");
      newPollBtn.addEventListener('click', ()=>{
        let name = document.getElementById("newPollName").value;
@@ -138,7 +139,7 @@ function addPoll(poll){
   col.className = "col-md-4";
   col.innerHTML = template;
   row.appendChild(col);
-  createModal(poll);
+  // createModal(poll);
 }
 function cardTemplate(poll){
   const percYes = (poll.votesYes/poll.totalVotes)*100;
@@ -183,7 +184,12 @@ async function getPoll(pollId, account) {
   poll.haveVoted = await contract.haveVoted(pollId, account);
   return poll;
 }
+<<<<<<< HEAD
 async function getContract (){
+=======
+function getContract (){
+  const provider = new ethers.getDefaultProvider("goerli");
+>>>>>>> f624e7d (deleted pagination)
   return  new ethers.Contract(config.contractAddress, config.contractABI.ABI, provider);
 }
 
