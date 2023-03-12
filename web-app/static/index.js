@@ -47,16 +47,42 @@ const onMainPageBtnClick = ()=>{
      fetch("./main.html")
          .then((x) => x.text())
          .then((y) => (document.querySelector("html").innerHTML = y));
+
      let numberPolls = await contract.pollCounter();
-     let activePolls = 0;
-       for (let i = 0; i < numberPolls; i++){
-         let poll = await getPoll(i, accounts[0]);
-         activePolls += poll.pollIsActive;
-         addPoll(poll);
-       }
-       setActivePolls(activePolls);
+     animate(true);
+     let polls = await getPolls(numberPolls, accounts[0]);
+     animate(false);
+       polls.forEach(poll => addPoll(poll));
    // let numPolls = a;
    }});
+}
+function animate(bool){
+  let row = document.querySelector("#cards-container");
+  if (bool){
+    row.innerHTML = "<div class=\"onboard-container\">\n" +
+        "      <div class=\"loader\">\n" +
+        "        <lottie-player\n" +
+        "          src=\"https://assets6.lottiefiles.com/private_files/lf30_fup2uejx.json\"\n" +
+        "          background=\"transparent\"\n" +
+        "          speed=\"1\"\n" +
+        "          loop\n" +
+        "          autoplay\n" +
+        "        ></lottie-player>\n" +
+        "      </div>";
+  }else{
+    row.innerHTML = "";
+  }
+}
+async function getPolls(numberPolls, account) {
+  let polls = [];
+  let activePolls = 0;
+  for (let i = 0; i < numberPolls; i++) {
+    let poll = await getPoll(i, account);
+    polls[i] = poll;
+    activePolls += poll.pollIsActive;
+  }
+  setActivePolls(activePolls);
+  return polls;
 }
 function setActivePolls(num){
   document.getElementById("act-polls").textContent=num;
