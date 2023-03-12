@@ -40,19 +40,29 @@ let connected = (accounts) => {
 async function connectWallet() {
   return await ethereum.request({ method: "eth_accounts" });
 }
+
+//click on button "make nova better"
 const onMainPageBtnClick = ()=>{
  connectWallet().then(async (accounts) => {
    if (accounts && accounts[0] > 0) {
      contract = await getContract();
+     
+     // change page to the main.html
      fetch("./main.html")
          .then((x) => x.text())
          .then((y) => (document.querySelector("html").innerHTML = y));
 
+      
+      // get existing polls
      let numberPolls = await contract.pollCounter();
      animate(true);
      let polls = await getPolls(numberPolls, accounts[0]);
      animate(false);
+
+     //load polls on the page
      polls.forEach(poll => addPoll(poll));
+
+     // event listener for the create poll btn
      let newPollBtn = document.querySelector("#new-form-created");
      newPollBtn.addEventListener('click', ()=>{
        let name = document.getElementById("newPollName").value;
@@ -63,6 +73,8 @@ const onMainPageBtnClick = ()=>{
    // let numPolls = a;
    }});
 }
+
+
 async function createPoll(contract, name, description){
   const tx = await contract.connect(provider.getSigner()).createPoll(name, description);
   await tx.wait();
