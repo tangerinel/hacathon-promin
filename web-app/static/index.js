@@ -43,7 +43,7 @@ async function connectWallet() {
 const onMainPageBtnClick = ()=>{
  connectWallet().then(async (accounts) => {
    if (accounts && accounts[0] > 0) {
-     contract = getContract();
+     contract = await getContract();
      fetch("./main.html")
          .then((x) => x.text())
          .then((y) => (document.querySelector("html").innerHTML = y));
@@ -53,8 +53,19 @@ const onMainPageBtnClick = ()=>{
      let polls = await getPolls(numberPolls, accounts[0]);
      animate(false);
      polls.forEach(poll => addPoll(poll));
+     let newPollBtn = document.querySelector("#new-form-created");
+     newPollBtn.addEventListener('click', ()=>{
+       let name = document.getElementById("newPollName").value;
+       let decription =  document.getElementById("newDescription").value;
+       createPoll(contract, name, decription);
+     })
+
    // let numPolls = a;
    }});
+}
+async function createPoll(contract, name, description){
+  const tx = await contract.createPoll(name, description);
+  await tx.wait();
 }
 function createModal(poll) {
   let id = "#voteModal"+poll.pollId;
@@ -172,9 +183,10 @@ async function getPoll(pollId, account) {
   poll.haveVoted = await contract.haveVoted(pollId, account);
   return poll;
 }
-function getContract (){
-  const provider = new ethers.getDefaultProvider("goerli");
-  return  new ethers.Contract(config.contractAddress, config.contractABI.ABI, provider);
+async function getContract (){
+  const provider = new ethers.providers.Web3Provider(ethereum, "goerli");
+  const signers = await ethereum.request({ method: "eth_requestAccounts" });
+  return  new ethers.Contract(config.contractAddress, config.contractABI.ABI, signers[0]);
 }
 
 
