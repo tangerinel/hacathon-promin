@@ -10,6 +10,7 @@ contract Voting {
         string description;
         uint voteYes;
         uint voteNo;
+        address author;
         mapping(address => bool) voted;
     }
 
@@ -35,6 +36,8 @@ contract Voting {
 
     event addedToWhitelist(uint indexed studentNumber, address indexed addr);
 
+    event removedFromWhitelist(address indexed addr);
+
     event addedToAdmins(address indexed addr);
 
     // FUNCTIONS
@@ -52,7 +55,7 @@ contract Voting {
     }
 
     function haveVoted(uint pollId, address addr) public view returns (bool) {
-        return polls[pollId].voted[addr];
+        return polls[pollId].author == addr || polls[pollId].voted[addr];
     }
 
     function pollIsActive(uint pollId) public view returns (bool) {
@@ -83,6 +86,10 @@ contract Voting {
         return polls[pollId].voteYes + polls[pollId].voteNo;
     }
 
+    function getAuthor(uint pollId) external view returns (address) {
+        return polls[pollId].author;
+    }
+
     function createPoll(string memory name, string memory description) external {
         require(isWhitelisted(msg.sender), "Not whitelisted");
 
@@ -91,6 +98,9 @@ contract Voting {
         polls[pollId].dateCreated = now;
         polls[pollId].name = name;
         polls[pollId].description = description;
+        // Poll author is considered automatically voting in favor of the poll
+        polls[pollId].voteYes = 1;
+        polls[pollId].author = msg.sender;
 
         pollCounter++;
 
@@ -118,6 +128,14 @@ contract Voting {
         whitelisted[addr] = true;
 
         emit addedToWhitelist(studentNumber, addr);
+    }
+
+    function removeFromWhitelist(address addr) external {
+        require(isAdmin(msg.sender), "Not admin");
+
+        whitelisted[addr] = false;
+
+        emit removedFromWhitelist(addr);
     }
 
     function addToAdmins(address addr) external {

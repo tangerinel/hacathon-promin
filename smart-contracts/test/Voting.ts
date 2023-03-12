@@ -34,8 +34,9 @@ describe("Voting", function () {
     expect(await voting.getName(pollId)).to.eq(name);
     expect(await voting.getDescription(pollId)).to.eq(description);
     expect(await voting.pollIsActive(pollId)).to.eq(true);
-    expect(await voting.getVoteYes(pollId)).to.eq(0);
+    expect(await voting.getVoteYes(pollId)).to.eq(1);
     expect(await voting.getVoteNo(pollId)).to.eq(0);
+    expect(await voting.getAuthor(pollId)).to.eq(other.address);
     expect(await voting.TIME_LIMIT()).to.eq(7 * 24 * 60 * 60);
     expect(await voting.pollCounter()).to.eq(1);
   });
@@ -48,9 +49,9 @@ describe("Voting", function () {
     let description = "description";
     await voting.createPoll(name, description);
     await voting.connect(other).vote(pollId, true);
-    expect(await voting.getVoteYes(pollId)).to.eq(1);
+    expect(await voting.getVoteYes(pollId)).to.eq(2);
     expect(await voting.haveVoted(pollId, other.address)).to.eq(true);
-    expect(await voting.haveVoted(pollId, owner.address)).to.eq(false);
+    expect(await voting.haveVoted(pollId, owner.address)).to.eq(true);
   });
 
   it("Poll expires", async function() {
