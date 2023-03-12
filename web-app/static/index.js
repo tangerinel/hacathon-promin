@@ -3,7 +3,7 @@
 // const ethers = require('ethers');
 
 
-
+const provider = new ethers.providers.Web3Provider(ethereum);
 
 const player = document.querySelector(".success-anim");
 
@@ -64,7 +64,7 @@ const onMainPageBtnClick = ()=>{
    }});
 }
 async function createPoll(contract, name, description){
-  const tx = await contract.createPoll(name, description);
+  const tx = await contract.connect(provider.getSigner()).createPoll(name, description);
   await tx.wait();
 }
 function createModal(poll) {
@@ -184,9 +184,7 @@ async function getPoll(pollId, account) {
   return poll;
 }
 async function getContract (){
-  const provider = new ethers.providers.Web3Provider(ethereum, "goerli");
-  const signers = await ethereum.request({ method: "eth_requestAccounts" });
-  return  new ethers.Contract(config.contractAddress, config.contractABI.ABI, signers[0]);
+  return  new ethers.Contract(config.contractAddress, config.contractABI.ABI, provider);
 }
 
 
