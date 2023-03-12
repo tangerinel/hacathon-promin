@@ -48,12 +48,18 @@ const onMainPageBtnClick = ()=>{
          .then((x) => x.text())
          .then((y) => (document.querySelector("html").innerHTML = y));
      let numberPolls = await contract.pollCounter();
+     let activePolls = 0;
        for (let i = 0; i < numberPolls; i++){
          let poll = await getPoll(i, accounts[0]);
+         activePolls += poll.pollIsActive;
          addPoll(poll);
        }
+       setActivePolls(activePolls);
    // let numPolls = a;
    }});
+}
+function setActivePolls(num){
+  document.getElementById("act-polls").textContent=num;
 }
 function addPoll(poll){
   const template = cardTemplate(poll);
