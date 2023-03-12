@@ -1,19 +1,19 @@
 .card {
-    margin-top: 2em;
-    padding: 1.5em 0.5em 0.5em;
-    border-radius: 2em;
-    text-align: center;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-  }
-.progress{
-    margin-bottom: 2em;
+  margin-top: 2em;
+  padding: 1.5em 0.5em 0.5em;
+  border-radius: 2em;
+  text-align: center;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+.progress {
+  margin-bottom: 2em;
 }
 
 #countdown {
-    font-size: 60px;
-    font-weight: bold;
-  }
+  font-size: 60px;
+  font-weight: bold;
+}
 
-.custom-btn-widtch{
-width: 100px;
-  }
+.custom-btn-widtch {
+  width: 100px;
+}

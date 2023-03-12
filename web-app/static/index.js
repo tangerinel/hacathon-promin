@@ -1,13 +1,7 @@
-//import MetaMaskOnboarding from "metamask-onboarding";
-
-// const ethers = require('ethers');
-
-
 const provider = new ethers.providers.Web3Provider(ethereum);
 
 const player = document.querySelector(".success-anim");
 
-// const onboarding = new MetaMaskOnboarding();
 const btn = document.querySelector(".onboard");
 const mainPageBtn = document.querySelector("#main-page");
 const statusText = document.querySelector("h1");
@@ -17,7 +11,6 @@ const upArrow = document.querySelector(".up");
 const confetti = document.querySelector(".confetti");
 
 let contract;
-
 
 const isMetaMaskInstalled = () => {
   const { ethereum } = window;
@@ -30,7 +23,7 @@ let connected = (accounts) => {
   statusDesc.innerHTML = accounts[0];
   btn.style.display = "none";
   mainPageBtn.removeAttribute("hidden");
-  mainPageBtn.onclick =  onMainPageBtnClick;
+  mainPageBtn.onclick = onMainPageBtnClick;
   loader.style.display = "none";
   upArrow.style.display = "none";
   confetti.style.display = "block";
@@ -40,111 +33,86 @@ let connected = (accounts) => {
 async function connectWallet() {
   return await ethereum.request({ method: "eth_accounts" });
 }
-const onMainPageBtnClick = ()=>{
- connectWallet().then(async (accounts) => {
-   if (accounts && accounts[0] > 0) {
-     contract = await getContract();
-     fetch("./main.html")
-         .then((x) => x.text())
-         .then((y) => (document.querySelector("html").innerHTML = y));
+const onMainPageBtnClick = () => {
+  connectWallet().then(async (accounts) => {
+    if (accounts && accounts[0] > 0) {
+      contract = await getContract();
+      fetch("./main.html")
+        .then((x) => x.text())
+        .then((y) => (document.querySelector("html").innerHTML = y));
 
-     let numberPolls = await contract.pollCounter();
-     animate(true);
-     let polls = await getPolls(numberPolls, accounts[0]);
-     animate(false);
-     polls.forEach(poll => addPoll(poll));
+      let numberPolls = await contract.pollCounter();
+      animate(true);
+      let polls = await getPolls(numberPolls, accounts[0]);
+      animate(false);
+      polls.forEach((poll) => addPoll(poll));
 
-     let newPollBtn = document.querySelector("#new-form-created");
-     newPollBtn.addEventListener('click', ()=>{
-       let name = document.getElementById("newPollName").value;
-       let description =  document.getElementById("newDescription").value;
-       createPoll(contract, name, description);
-     })
+      let newPollBtn = document.querySelector("#new-form-created");
+      newPollBtn.addEventListener("click", () => {
+        let name = document.getElementById("newPollName").value;
+        let description = document.getElementById("newDescription").value;
+        createPoll(contract, name, description);
+      });
 
-     const buttons = document.querySelectorAll('[data-target="#voteModal"]');
-     buttons.forEach(button => {
-       button.addEventListener('click', () => {
-         // Get the text to display in the modal from the button's data-text attribute
+      const buttons = document.querySelectorAll('[data-target="#voteModal"]');
+      buttons.forEach((button) => {
+        button.addEventListener("click", () => {
+          // Get the text to display in the modal from the button's data-text attribute
 
-         const id = button.getAttribute('id');
-         const percent = document.getElementById('perc');
-         const name = document.getElementById('name');
-         const desc = document.getElementById('description');
-         const btnYes = document.getElementById('yes');
-         const btnNo = document.getElementById('no');
-         // Set the text in the modal body
-         const poll = polls[id];
-         name.textContent = poll.name;
-         desc.textContent = poll.description;
-         let quorum =  (poll.votesYes/poll.totalVotes)*100;
-         percent.textContent =quorum + '%';
+          const id = button.getAttribute("id");
+          const percent = document.getElementById("perc");
+          const name = document.getElementById("name");
+          const desc = document.getElementById("description");
+          const btnYes = document.getElementById("yes");
+          const btnNo = document.getElementById("no");
+          // Set the text in the modal body
+          const poll = polls[id];
+          name.textContent = poll.name;
+          desc.textContent = poll.description;
+          let quorum = (poll.votesYes / poll.totalVotes) * 100;
+          percent.textContent = quorum + "%";
 
-         //set button listeners
-         btnYes.addEventListener('click',async () => {
-           const tx = await contract.connect(provider.getSigner()).vote(poll.pollId, true);
-           await tx.wait();
-         })
-         btnNo.addEventListener('click',async () => {
-           const tx = await contract.connect(provider.getSigner()).vote(poll.pollId, false);
-           await tx.wait();
-         })
-       });
-     });
-
-   // let numPolls = a;
-   }});
-}
-async function createPoll(contract, name, description){
-  const tx = await contract.connect(provider.getSigner()).createPoll(name, description);
+          //set button listeners
+          btnYes.addEventListener("click", async () => {
+            const tx = await contract
+              .connect(provider.getSigner())
+              .vote(poll.pollId, true);
+            await tx.wait();
+          });
+          btnNo.addEventListener("click", async () => {
+            const tx = await contract
+              .connect(provider.getSigner())
+              .vote(poll.pollId, false);
+            await tx.wait();
+          });
+        });
+      });
+    }
+  });
+};
+async function createPoll(contract, name, description) {
+  const tx = await contract
+    .connect(provider.getSigner())
+    .createPoll(name, description);
   await tx.wait();
 }
-// function createModal(poll) {
-//   let id = "#voteModal";
-//   let container = document.querySelector(".container");
-//   let modal = document.createElement('div');
-//   modal.className = "modal fade";
-//   modal.id = id;
-//   modal.tabIndex = -1;
-//   modal.role="dialog";
-//   modal.setAttribute("aria-labelledby","voteModalLabel");
-//   modal.setAttribute("aria-hidden",'true');
-//
-//   modal.innerHTML = `
-//       <div class="modal-dialog" role="document">
-//             <div class="modal-content">
-//                 <div class="modal-header">
-//                     <h5 class="modal-title" id="voteModalLabel">${poll.name}</h5>
-//                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-//                       <span aria-hidden="true">&times;</span>
-//                     </button>
-//                   </div>
-//                   <div class="modal-body">
-//                     <p>Are you sure you want to vote for this card?</p>
-//                   </div>
-//                   <div class="modal-footer">
-//                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-//                     <button type="button" class="btn btn-primary">Vote</button>
-//                   </div>
-//                 </div>
-//               </div>`
-//
-//   container.appendChild(modal);
-// }
-function animate(bool){
+
+function animate(bool) {
   let row = document.querySelector("#cards-container");
-  if (bool){
-    row.innerHTML = "<div class=\"onboard-container mx-auto\">\n" +
-        "      <div class=\"loader \">\n" +
-        "        <lottie-player\n" +
-        "          class=\"\"" +
-        "          src=\"https://assets6.lottiefiles.com/private_files/lf30_fup2uejx.json\"\n" +
-        "          background=\"transparent\"\n" +
-        "          speed=\"1\"\n" +
-        "          loop\n" +
-        "          autoplay\n" +
-        "        ></lottie-player>\n" +
-        "      </div>";
-  }else{
+  if (bool) {
+    row.innerHTML =
+      '<div class="onboard-container mx-auto">\n' +
+      '      <div class="loader ">\n' +
+      "        <lottie-player\n" +
+      '          class=""' +
+      '          src="https://assets6.lottiefiles.com/private_files/lf30_fup2uejx.json"\n' +
+      '          background="transparent"\n' +
+      '          speed="1"\n' +
+      "          loop\n" +
+      "          autoplay\n" +
+      "        ></lottie-player>\n" +
+      "      </div>";
+  } else {
     row.innerHTML = "";
   }
 }
@@ -159,21 +127,20 @@ async function getPolls(numberPolls, account) {
   setActivePolls(activePolls);
   return polls;
 }
-function setActivePolls(num){
-  document.getElementById("act-polls").textContent=num;
+function setActivePolls(num) {
+  document.getElementById("act-polls").textContent = num;
 }
-function addPoll(poll){
+function addPoll(poll) {
   const template = cardTemplate(poll);
   let row = document.querySelector("#cards-container");
-  const col = document.createElement('div');
+  const col = document.createElement("div");
   col.className = "col-md-4";
   col.innerHTML = template;
   row.appendChild(col);
-  // createModal(poll);
 }
-function cardTemplate(poll){
-  const percYes = (poll.votesYes/poll.totalVotes)*100;
-  const percNo = (poll.votesNo/poll.totalVotes)*100;
+function cardTemplate(poll) {
+  const percYes = (poll.votesYes / poll.totalVotes) * 100;
+  const percNo = (poll.votesNo / poll.totalVotes) * 100;
   const modalId = "#voteModal";
   const template = `  <div class="card">
           <div class="card-body">
@@ -193,16 +160,13 @@ function cardTemplate(poll){
             <button type="button" id=${poll.pollId} class="btn btn-outline-info  float-right" data-toggle="modal" data-target=${modalId} >Vote</button>
           </div>
         </div>
-      </div>`
+      </div>`;
 
   return template;
 }
-// const onClickInstallMetaMask = () => {
-//   onboarding.startOnboarding();
-//   loader.style.display = "block";
-// };
+
 async function getPoll(pollId, account) {
-  let poll = {pollId: pollId};
+  let poll = { pollId: pollId };
   poll.name = await contract.getName(pollId);
   poll.description = await contract.getDescription(pollId);
   poll.votesYes = await contract.getVoteYes(pollId);
@@ -214,10 +178,13 @@ async function getPoll(pollId, account) {
   poll.haveVoted = await contract.haveVoted(pollId, account);
   return poll;
 }
-async function getContract (){
-  return  new ethers.Contract(config.contractAddress, config.contractABI.ABI, provider);
+async function getContract() {
+  return new ethers.Contract(
+    config.contractAddress,
+    config.contractABI.ABI,
+    provider
+  );
 }
-
 
 btn.addEventListener("click", async () => {
   btn.style.backgroundColor = "#cccccc";
@@ -236,7 +203,6 @@ const MetaMaskClientCheck = () => {
     statusText.innerText = "You have to Install a Wallet";
     statusDesc.innerText = "We recommend the MetaMask wallet.";
     btn.innerText = "Install MetaMask";
-    // btn.onclick = onClickInstallMetaMask;
   } else {
     connectWallet().then((accounts) => {
       if (accounts && accounts[0] > 0) {
@@ -251,9 +217,7 @@ const MetaMaskClientCheck = () => {
   }
 };
 
-
 MetaMaskClientCheck();
-
 
 // TIMER
 
